@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/src"/>
+    <qresource prefix="/src/ico">
+        <file>src/ico/cornGold_128X128.ico</file>
+        <file>src/ico/cornGreen_128X128.ico</file>
+    </qresource>
+</RCC>
