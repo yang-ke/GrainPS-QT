@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui sql network
+QT       += core gui sql network printsupport multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -13,7 +13,6 @@ RC_FILE = icon.rc
 TARGET = GrainPS-QT
 TEMPLATE = app
 
-
 SOURCES += main.cpp\
         mainwindow.cpp \
     generateqrcodedlg.cpp \
@@ -21,7 +20,9 @@ SOURCES += main.cpp\
     globalconfig.cpp \
     inimanager.cpp \
     sqlmanager.cpp \
-    sqlstr.cpp
+    sqlstr.cpp \
+    codesignindlg.cpp \
+    codesigninconfigdlg.cpp
 
 HEADERS  += mainwindow.h \
     generateqrcodedlg.h \
@@ -29,10 +30,14 @@ HEADERS  += mainwindow.h \
     globalconfig.h \
     inimanager.h \
     sqlmanager.h \
-    sqlstr.h
+    sqlstr.h \
+    codesignindlg.h \
+    codesigninconfigdlg.h
 
 FORMS    += mainwindow.ui \
-    generateqrcodedlg.ui
+    generateqrcodedlg.ui \
+    codesignindlg.ui \
+    codesigninconfigdlg.ui
 
 RESOURCES += \
     gps.qrc

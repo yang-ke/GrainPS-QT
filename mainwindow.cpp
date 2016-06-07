@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "generateqrcodedlg.h"
+#include "codesignindlg.h"
+
 #include "QMessageBox"
 #include "QCloseEvent"
 #include "QDebug"
@@ -45,7 +47,9 @@ void MainWindow::closeEvent(QCloseEvent *event){
     }
 }
 
-void MainWindow::on_actionOther_triggered()
+void MainWindow::on_actionCodeSignIn_triggered()
 {
+    CodeSignInDlg codeSignInDlg;
+    codeSignInDlg.exec();
 
 }

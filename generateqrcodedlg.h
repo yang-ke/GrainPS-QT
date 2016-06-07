@@ -2,6 +2,8 @@
 #define GENERATEQRCODEDLG_H
 
 #include <QDialog>
+#include <QtPrintSupport/QPrinter>
+#include <QProcess>
 
 namespace Ui {
 class GenerateQrCodeDlg;
@@ -21,9 +23,22 @@ private slots:
 
     void on_generatePushButton_clicked();
 
+    void on_selectAllPushButton_clicked();
+
+    void on_printPushButton_clicked();
+
+    void plotPic(QPrinter *printer);
+
+    void on_generateQrCodeTableView_clicked(const QModelIndex &index);
+
 private:
     Ui::GenerateQrCodeDlg *ui;
     enum ColumnIndex;
+    enum DaySelect;
+    QString uid;
+    QString sequenceNumber;
+    void generateQrCodeGenerateInf(QString UID , QString SEQUENCE_NUMBER);
+    QProcess process;
 };
 
 #endif // GENERATEQRCODEDLG_H

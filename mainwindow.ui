@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="gps.qrc">
+   <iconset>
     <normaloff>:/cornGreen_128X128.ico</normaloff>:/cornGreen_128X128.ico</iconset>
   </property>
   <widget class="QWidget" name="centralWidget"/>
@@ -32,7 +32,7 @@
      <string>start</string>
     </property>
     <addaction name="actionGenerateCode"/>
-    <addaction name="actionOther"/>
+    <addaction name="actionCodeSignIn"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
@@ -84,9 +84,9 @@
     <string>dayReport</string>
    </property>
   </action>
-  <action name="actionOther">
+  <action name="actionCodeSignIn">
    <property name="text">
-    <string>other...</string>
+    <string>codeSignIn</string>
    </property>
   </action>
   <action name="actionExit">
@@ -106,8 +106,6 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="gps.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

@@ -6,11 +6,21 @@
 
 #include "QSqlTableModel"
 #include "QTableView"
-#include "QMessageBox"
-#include "QUuid"
 #include "QSqlError"
 #include "QSqlQuery"
 #include "QSqlRecord"
+
+#include "QProcess"
+
+#include "QMessageBox"
+#include "QDialog"
+#include "QUuid"
+#include "QStringList"
+#include "QJsonObject"
+
+#include <QtPrintSupport/QPrinter>
+#include <QtPrintSupport/QtPrintSupport>
+#include "QPixmap"
 
 #include <QtWidgets>
 
@@ -44,8 +54,7 @@ GenerateQrCodeDlg::GenerateQrCodeDlg(QWidget *parent) :
 
     ui->grainTypeComboBox->addItems(SqlManager::getKeyMap(QObject::tr("grainType")));
 
-
-    //
+    //todo
     QSqlTableModel  *SEQUENCE_NUMBER_model = new QSqlTableModel;
 
     QString generateStartDate = ui->startDateEdit->text();
@@ -66,6 +75,11 @@ GenerateQrCodeDlg::GenerateQrCodeDlg(QWidget *parent) :
     header->setStretchLastSection(true);
 
     ui->generateQrCodeTableView->show();
+
+    QProcess *process = new QProcess(this);
+    QString program = ".\\QRCodeGui\\qrcode.exe";
+    QStringList arguments ;
+    process->start(program, arguments);
 }
 
 GenerateQrCodeDlg::~GenerateQrCodeDlg()
@@ -114,4 +128,79 @@ void GenerateQrCodeDlg::on_generatePushButton_clicked()
             tm->select();
         }
     }
+}
+
+void GenerateQrCodeDlg::on_selectAllPushButton_clicked()
+{
+
+}
+
+void GenerateQrCodeDlg::on_generateQrCodeTableView_clicked(const QModelIndex &index)
+{
+    QSqlTableModel * tm = qobject_cast<QSqlTableModel *>(ui->generateQrCodeTableView->model());
+
+    uid = tm->record(index.row()).value(1).toString();
+    sequenceNumber = tm->record(index.row()).value(2).toString();
+    GenerateQrCodeDlg::generateQrCodeGenerateInf(uid,sequenceNumber);
+}
+
+void GenerateQrCodeDlg::generateQrCodeGenerateInf(QString UID, QString SEQUENCE_NUMBER){
+    QJsonObject jsonObj;
+    jsonObj.insert("UID",UID);
+    jsonObj.insert("SEQUENCE_NUMBER",SEQUENCE_NUMBER);
+
+    QString program = ".\\QRCodeGui\\qrcode.exe",fileName = QObject::tr(".\\QRCodeGui\\%1.png").arg(UID);
+    QStringList arguments ;
+    arguments << "-o" << fileName << "-s" << "10" << "-l" << "M" << QJsonDocument(jsonObj).toJson();
+    process.start(program,arguments);
+}
+
+void GenerateQrCodeDlg::on_printPushButton_clicked()
+{
+    QPrinter printer(QPrinter::HighResolution);
+
+    QImageReader reader(QObject::tr(".\\QRCodeGui\\%1.png").arg(uid));
+    reader.setAutoTransform(true);
+    const QImage newImage = reader.read();
+    if (newImage.isNull()) {
+        QMessageBox::information(this, QGuiApplication::applicationDisplayName(),
+                                 tr("Cannot load %1: %2")
+                                 .arg(QObject::tr("picture"), reader.errorString()));
+    }
+    QPixmap image = QPixmap::fromImage(newImage);
+    QPainter painter(&printer);
+    QRect rect = painter.viewport();
+    QSize size = image.size();
+    size.scale(rect.size(), Qt::KeepAspectRatio);
+    painter.setViewport(rect.x(), rect.y(),size.width(), size.height());
+    painter.setWindow(image.rect());
+
+    painter.drawPixmap(0,0,image);
+    painter.end();
+
+    //QPrintPreviewDialog preview(&printer,0);
+
+    //connect(&preview, SIGNAL(paintRequested(QPrinter *)),this,SLOT(plotPic(QPrinter *)));
+    //preview.exec();
+}
+
+void GenerateQrCodeDlg::plotPic(QPrinter *printer)
+{
+    QImageReader reader(QObject::tr(".\\QRCodeGui\\%1.png").arg(uid));
+    reader.setAutoTransform(true);
+    const QImage newImage = reader.read();
+    if (newImage.isNull()) {
+        QMessageBox::information(this, QGuiApplication::applicationDisplayName(),
+                                 tr("Cannot load %1: %2")
+                                 .arg(QObject::tr("picture"), reader.errorString()));
+    }
+    QPixmap image = QPixmap::fromImage(newImage);
+    QPainter painter(printer);
+    QRect rect = painter.viewport();
+    QSize size = image.size();
+    size.scale(rect.size(), Qt::KeepAspectRatio);
+    painter.setViewport(rect.x(), rect.y(),size.width(), size.height());
+    painter.setWindow(image.rect());
+
+    painter.drawPixmap(0,0,image);
 }
